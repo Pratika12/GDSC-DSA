@@ -1,0 +1,23 @@
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) 
+    {
+        string str="";
+        for(ListNode *temp=head;temp!=NULL;temp=temp->next)
+        {
+            str+=to_string(temp->val);
+        }
+        int low=0;
+        int high=str.length()-1;
+        while(low<high)
+        {
+            if(str[low]!=str[high])
+            {
+                return false;
+            }
+            low++;
+            high--;
+        }
+        return true;
+    }
+};
