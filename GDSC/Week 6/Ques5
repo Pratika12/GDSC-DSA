@@ -1,50 +1,36 @@
 class MinStack {
 public:
-    vector <int> ans;
-    int mn;
-    MinStack() 
-    {
-        mn=INT_MAX;
+    vector <pair<int,int>> ans;
+    MinStack() {
+        
     }
     
     void push(int val) 
     {
-        if(val<mn)
+        if(ans.size()==0)
         {
-            mn=val;
+            ans.push_back(make_pair(val,val));
         }
-        ans.push_back(val);
+        else
+        {
+            ans.push_back(make_pair(val,min(val,ans[ans.size()-1].second)));
+        }
     }
     
     void pop() 
     {
-        int last=ans[ans.size()-1];
-        if(last==mn)
-        {
-            ans.pop_back();
-            mn=INT_MAX;
-            for(int i=0;i<ans.size();i++)
-            {
-                mn=min(mn,ans[i]);
-            }
-        }
-        else
-        {
-            ans.pop_back();
-        }
+        if(ans.size()>0)
+        ans.pop_back();
     }
     
     int top() 
     {
-        if(ans.size()>0)
-            return ans[ans.size()-1];
-        else 
-            return -1;
+        return ans[ans.size()-1].first;
     }
     
     int getMin() 
     {
-        return mn;
+        return ans[ans.size()-1].second;
     }
 };
 
