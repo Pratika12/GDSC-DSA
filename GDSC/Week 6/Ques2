@@ -1,0 +1,124 @@
+// { Driver Code Starts
+// C++ implementation to convert infix expression to postfix
+#include<bits/stdc++.h>
+using namespace std;
+
+
+ // } Driver Code Ends
+
+class Solution
+{
+    public:
+    //Function to convert an infix expression to a postfix expression.
+    string infixToPostfix(string s)
+    {
+        string ans="";
+        int i=0;
+        stack <char> stk;
+        while(i<s.length())
+        {
+            // cout<<"ans="<<ans<<endl;
+            char ch=s[i];
+            // cout<<"ch="<<ch<<endl;
+            if(ch=='(')
+            {
+                stk.push(ch);
+            }
+            else if(ch=='+' || ch=='-')
+            {
+                while(stk.empty()==0)
+                {
+                    char c=stk.top();
+                    if(c=='*' || c=='/' || c=='^' || c=='+' || c=='-')
+                    {
+                        ans+=c;
+                        stk.pop();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                stk.push(ch);
+            }
+            else if(ch=='*' || ch=='/')
+            {
+                while(stk.empty()==0)
+                {
+                    char c=stk.top();
+                    if(c=='*' || c=='/' || c=='^')
+                    {
+                        ans+=c;
+                        stk.pop();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                stk.push(ch);
+            }
+            else if(ch=='^')
+            {
+                while(stk.empty()==0)
+                {
+                    char c=stk.top();
+                    if(c=='^')
+                    {
+                        ans+=c;
+                        stk.pop();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                stk.push(ch);
+            }
+            else if(ch==')')
+            {
+                char t=stk.top();
+                while(stk.empty()==0 && t!='(')
+                {
+                    ans+=t;
+                    stk.pop();
+                    if(stk.empty())
+                    break;
+                    t=stk.top();
+                }
+                stk.pop();
+            }
+            else
+            {
+                ans+=ch;           
+            }
+            i++;
+        }
+        
+        while(stk.empty()==0)
+        {
+            ans+=stk.top();
+            stk.pop();
+        }
+        return ans;
+    }
+};
+
+
+// { Driver Code Starts.
+//Driver program to test above functions
+int main()
+{
+    int t;
+    cin>>t;
+    cin.ignore(INT_MAX, '\n');
+    while(t--)
+    {
+        string exp;
+        cin>>exp;
+        Solution ob;
+        cout<<ob.infixToPostfix(exp)<<endl;
+    }
+    return 0;
+}
+  // } Driver C
