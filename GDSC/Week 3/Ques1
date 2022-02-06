@@ -1,0 +1,60 @@
+// { Driver Code Starts
+#include<bits/stdc++.h>
+using namespace std;
+
+
+ // } Driver Code Ends
+
+
+
+class Solution
+{
+    public:
+    //Function to find the maximum occurring character in a string.
+    char getMaxOccuringChar(string str)
+    {
+        unordered_map <char,int> umap;
+        for(int i=0;i<str.length();i++)
+        {
+            umap[str[i]]++;
+        }
+        
+        unordered_map <char,int> :: iterator p=umap.begin();
+        int mx=INT_MIN;
+        char ch;
+        while(p!=umap.end())
+        {
+            if(p->second>mx)
+            {
+                mx=p->second;
+                ch=p->first;
+            }
+            if(p->second==mx)
+            {
+                if(ch>p->first)
+                {
+                    ch=p->first;
+                }
+            }
+            p++;
+        }
+        return ch;
+    }
+
+};
+
+// { Driver Code Starts.
+
+int main()
+{
+   
+    int t;
+    cin >> t;
+    while(t--)
+    {
+        string str;
+        cin >> str;
+    	Solution obj;
+        cout<< obj.getMaxOccuringChar(str)<<endl;
+    }
+}  // } Driver Code Ends
