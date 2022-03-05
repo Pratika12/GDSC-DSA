@@ -1,92 +1,115 @@
-class MyQueue {
-public:
-    stack <int> s1,s2;
-    MyQueue() {
-        
-    }
-    
-    void push(int x) 
-    {
-        if(s2.empty()==1)
-        {
-            s1.push(x);
-        }
-        else
-        {
-            while(s2.empty()==0)
-            {
-                s1.push(s2.top());
-                s2.pop();
-            }
-            s1.push(x);
-        }
-    }
-    
-    int pop() 
-    {
-        int t;
-        if(s2.empty()==1 && s1.empty()==1)
-        {
-            return -1;
-        }
-        else if(s2.empty()==1)
-        {
-            while(s1.size()>1)
-            {
-                s2.push(s1.top());
-                s1.pop();
-            }
-            t=s1.top();
-            s1.pop();
-        }
-        else
-        {
-            t=s2.top();
-            s2.pop();
-        }
-        return t;
-    }
-    
-    int peek() 
-    {
-        int t;
-        if(s2.empty()==1 && s1.empty()==1)
-        {
-            return -1;
-        }
-        else if(s2.empty()==1)
-        {
-            while(s1.size()>1)
-            {
-                s2.push(s1.top());
-                s1.pop();
-            }
-            t=s1.top();
-            s2.push(s1.top());
-            s1.pop();
-        }
-        else
-        {
-            t=s2.top();
-        }
-        return t;
-    }
-    
-    bool empty() 
-    {
-        if(s2.empty()==1 && s1.empty()==1)
-        {
-            return true;
-        }
-        return false;
-    }
+// { Driver Code Starts
+//Author- SAJAL AGRAWAL
+//sajal.agrawal1997@gmail.com
+
+#include <stdio.h>
+#include <stdlib.h>
+#include<string.h>
+
+struct Node
+{
+	int data;
+	struct Node *left;
+	struct Node *right;
+	
+	Node(int x){
+	    data = x;
+	    left = NULL;
+	    right = NULL;
+	}
 };
 
-/**
- * Your MyQueue object will be instantiated and called as such:
- * MyQueue* obj = new MyQueue();
- * obj->push(x);
- * int param_2 = obj->pop();
- * int param_3 = obj->peek();
- * bool param_4 = obj->empty();
- */
+Node *insert(Node *r,int num);
+int sumOfLeafNodes(Node *r);
+void preOrderDisplay(Node *r);
+void inOrderDisplay(Node *r);
+void postOrderDisplay(Node *r);
+int search(Node *r, int num);
+
+int main(void) {
+    int t,n,data;
+    scanf("%d",&t);
+    while(t--){
+        Node *root=NULL;
+        scanf("%d",&n);
+        //printf("n=%d\n",n);
+        while(n--){
+            scanf("%d",&data);
+            //printf("data=%d\n",data);
+            root=insert(root,data);
+        }
+        //inOrderDisplay(root);
+        printf("%d\n",sumOfLeafNodes(root));
+    }
+	return 0;
+}
+
+Node *insert(Node *r,int num){
+    if(r==NULL){
+        r = new Node(num);
+    }else{
+        if(num<r->data){
+            r->left=insert(r->left,num);
+        }else{
+            r->right=insert(r->right,num);
+        }
+    }
+    return r;
+}
+
+void preOrderDisplay(Node *r){
+    if(r!=NULL){
+        printf("%d ",r->data);
+        preOrderDisplay(r->left);
+        preOrderDisplay(r->right);
+    }
+}
+
+void inOrderDisplay(Node *r){
+    if(r!=NULL){
+        inOrderDisplay(r->left);
+        printf("%d ",r->data);
+        inOrderDisplay(r->right);
+    }
+}
+
+void postOrderDisplay(Node *r){
+    if(r!=NULL){
+        postOrderDisplay(r->left);
+        postOrderDisplay(r->right);
+        printf("%d ",r->data);
+    }
+}
+
+int search(Node *r,int num){
+    if(r==NULL)return 0;
+    else if(r->data==num)return 0;
+    else if(r->data > num)
+        search(r->left,num);
+    else 
+        search(r->right,num);
+}// } Driver Code Ends
+
+
+/* The structure of Node
+struct Node{
+    int data;
+    Node *left,*right;
+}; */
+
+
+/*You are required to complete below method */
+int sumOfLeafNodes(Node *r )
+{
+    if(r==NULL)
+    {
+        return 0;
+    }
+    if(r->left==NULL && r->right==NULL)
+    {
+        return r->data;
+    }
+    int l=sumOfLeafNodes(r->left);
+    int ri=sumOfLeafNodes(r->right);
+    return l+ri;
+}
