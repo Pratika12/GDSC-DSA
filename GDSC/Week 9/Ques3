@@ -2,105 +2,157 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-struct QueueNode
+struct Node
 {
     int data;
-    QueueNode *next;
-    QueueNode(int a)
-    {
-        data = a;
-        next = NULL;
+    struct Node *left;
+    struct Node *right;
+};
+Node* newNode(int val)
+{
+    Node* temp = new Node;
+    temp->data = val;
+    temp->left = NULL;
+    temp->right = NULL;
+    
+    return temp;
+}
+Node* buildTree(string str)
+{   
+    // Corner Case
+    if(str.length() == 0 || str[0] == 'N')
+            return NULL;
+    
+    // Creating vector of strings from input 
+    // string after spliting by space
+    vector<string> ip;
+    
+    istringstream iss(str);
+    for(string str; iss >> str; )
+        ip.push_back(str);
+        
+    // Create the root of the tree
+    Node* root = newNode(stoi(ip[0]));
+        
+    // Push the root to the queue
+    queue<Node*> queue;
+    queue.push(root);
+        
+    // Starting from the second element
+    int i = 1;
+    while(!queue.empty() && i < ip.size()) {
+            
+        // Get and remove the front of the queue
+        Node* currNode = queue.front();
+        queue.pop();
+            
+        // Get the current node's value from the string
+        string currVal = ip[i];
+            
+        // If the left child is not null
+        if(currVal != "N") {
+                
+            // Create the left child for the current node
+            currNode->left = newNode(stoi(currVal));
+                
+            // Push it to the queue
+            queue.push(currNode->left);
+        }
+            
+        // For the right child
+        i++;
+        if(i >= ip.size())
+            break;
+        currVal = ip[i];
+            
+        // If the right child is not null
+        if(currVal != "N") {
+                
+            // Create the right child for the current node
+            currNode->right = newNode(stoi(currVal));
+                
+            // Push it to the queue
+            queue.push(currNode->right);
+        }
+        i++;
     }
-};
-
-struct MyQueue {
-    QueueNode *front;
-    QueueNode *rear;
-    void push(int);
-    int pop();
-    MyQueue() {front = rear = NULL;}
-};
-
-
+    
+    return root;
+}
+vector<int> noSibling(Node *root);
 
 int main()
 {
-    int T;
-    cin>>T;
-    while(T--)
+    int t;
+    scanf("%d ",&t);
+    while(t--)
     {
-        MyQueue *sq = new MyQueue();
-
-        int Q;
-        cin>>Q;
-        while(Q--){
-        int QueryType=0;
-        cin>>QueryType;
-        if(QueryType==1)
+        string s;
+        getline(cin,s);
+        Node* root = buildTree(s);
+        
+        vector<int> res = noSibling(root);
+        for (int i = 0; i < res.size(); ++i)
         {
-            int a;
-            cin>>a;
-            sq->push(a);
-        }else if(QueryType==2){
-            cout<<sq->pop()<<" ";
-
-        }
+            cout<<res[i]<<" ";
         }
         cout<<endl;
-    }
-    }
+  }
+  return 0;
+}
 // } Driver Code Ends
 
 
-/* Structure of a node in Queue
-struct QueueNode
-{
-    int data;
-    QueueNode *next;
-    QueueNode(int a)
-    {
-        data = a;
-        next = NULL;
-    }
-};
+//User function Template for C++
 
-And structure of MyQueue
-struct MyQueue {
-    QueueNode *front;
-    QueueNode *rear;
-    void push(int);
-    int pop();
-    MyQueue() {front = rear = NULL;}
+/* Tree node structure  used in the program
+ struct Node
+ {
+     int data;
+     Node* left, *right;
 }; */
 
-//Function to push an element into the queue.
-void MyQueue:: push(int x)
+vector<int> noSibling(Node* node)
 {
-    QueueNode *n=new QueueNode(x);
-        if(front==NULL)
-        {
-            front=rear=n;
-        }
-        else
-        {
-            rear->next=n;
-            rear=n;
-        }
+    vector <int> ans;
+    if(node==NULL || node->left==NULL && node->right==NULL)
+    {
+        return ans;
+    }
+    
+    if(node->left==NULL)
+    {
+        ans.push_back(node->right->data);
+    }
+    
+    if(node->right==NULL)
+    {
+        ans.push_back(node->left->data);
+    }
+    
+    vector <int> a1=noSibling(node->left);
+    vector <int> a2=noSibling(node->right);
+    
+    for(int i:a1)
+    {
+        if(i!=-1)
+        ans.push_back(i);
+    }
+    
+    for(int i:a2)
+    {
+        if(i!=-1)
+        ans.push_back(i);
+    }
+    
+    if(ans.size()==0)
+    {
+        ans.push_back(-1);
+    }
+    
+    sort(ans.begin(),ans.end());
+    return ans;
 }
 
-//Function to pop front element from the queue.
-int MyQueue :: pop()
-{
-    if(front==NULL)
-    {
-        return -1;
-    }
-    else
-    {
-        int d=front->data;
-        QueueNode *temp=front;
-        front=front->next;
-        delete temp;
-        return d;
-    }
-}
+
+
